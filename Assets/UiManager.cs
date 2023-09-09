@@ -8,15 +8,22 @@ public class UiManager : MonoBehaviour
 {
     public static UiManager instance;
 
-    [SerializeField] TextMeshProUGUI killsText;
+    [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject gameOverMenu;
-    [SerializeField] TextMeshProUGUI gameOverKillsText;
-    int kills;
+    [SerializeField] TextMeshProUGUI gameOverScoreText;
+    [SerializeField] TextMeshProUGUI highScoreText;
+    [SerializeField] GameObject NewHighScoreTitle;
+    int score;
 
     private void Awake()
     {
         if (instance == null)
             instance = this;
+    }
+
+    private void Start()
+    {
+        highScoreText.text = "HighScore: " +  PlayerPrefs.GetInt("HighScore", 0).ToString();
     }
 
     private void Update()
@@ -27,15 +34,22 @@ public class UiManager : MonoBehaviour
 
     public void GameOver()
     {
-        killsText.enabled = false;
-        gameOverKillsText.text = "Kills: " + kills.ToString();
+        scoreText.enabled = false;
+        gameOverScoreText.text = "Kills: " + score.ToString();
+        int _highScore = PlayerPrefs.GetInt("HighScore", 0);
+        if (score > _highScore)
+        {
+            NewHighScoreTitle.SetActive(true);
+            PlayerPrefs.SetInt("HighScore", score);
+            highScoreText.text = "HighScore: " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+        }
         gameOverMenu.SetActive(true);
     }
 
     public void Kills()
     {
-        kills++;
-        killsText.text = "Kills: " + kills.ToString();
+        score++;
+        scoreText.text = "Kills: " + score.ToString();
     }
 
     public void Restart()
